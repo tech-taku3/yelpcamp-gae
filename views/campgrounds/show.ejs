@@ -8,8 +8,11 @@
 <body>
     <h1><%= campground.title %></h1>
     <h2><%= campground.location %></h2>
+    <p>
+        <a href="/campgrounds/<%= campground._id %>/edit">編集</a>
+    </p>
     <footer>
-        <a href="/campgrounds">戻る</a>    
+        <a href="/campgrounds">一覧に戻る</a>    
     </footer>
 </body>
 </html>
