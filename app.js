@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const Campground = require('./models/campground');
 
@@ -42,6 +43,7 @@ app.get('/campgrounds/:id', catchAsync(async (req, res) => {
 }));
 
 app.post('/campgrounds', catchAsync(async (req, res) => {
+    if (!req.body.campground) throw new ExpressError('不正なキャンプ場のデータです', 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
@@ -64,8 +66,15 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     res.redirect('/campgrounds');
 }));
 
+// 講義では、('*', (req, ..))だが、5系以降挙動が変わっているらしい。Q&Aで似た事象があり、この書き方でエラーが解消された。
+app.all('{*any}', (req, res, next) => {
+    // res.send('404!!!!!');
+    next(new ExpressError('ページが見つかりませんでした',404));
+});
+
 app.use((err, req, res, next) => {
-    res.send('問題が起きました');
+    const { statusCode = 500, message = '問題が起きました'} = err;
+    res.status(statusCode).send(message);
 });
 
 app.listen(3000, () => {
