@@ -7,6 +7,7 @@ const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const Campground = require('./models/campground');
+const Review = require('./models/review');
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
     .then(() => {
@@ -76,6 +77,15 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
 }));
+
+app.post('/campgrounds/:id/reviews', async(req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await campground.save();
+    await review.save();
+    res.redirect(`/campgrounds/${campground._id}`);
+});
 
 // 講義では、('*', (req, ..))だが、5系以降挙動が変わっているらしい。Q&Aで似た事象があり、この書き方でエラーが解消された。
 app.all('{*any}', (req, res, next) => {
