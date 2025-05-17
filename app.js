@@ -97,6 +97,13 @@ app.post('/campgrounds/:id/reviews',validateReview, catchAsync(async(req, res) =
     res.redirect(`/campgrounds/${campground._id}`);
 }));
 
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async(req, res) => {
+    const { id, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId} });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`);
+}));
+
 // 講義では、('*', (req, ..))だが、5系以降挙動が変わっているらしい。Q&Aで似た事象があり、この書き方でエラーが解消された。
 app.all('{*any}', (req, res, next) => {
     // res.send('404!!!!!');
