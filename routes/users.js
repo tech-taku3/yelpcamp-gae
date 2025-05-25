@@ -32,4 +32,21 @@ router.post('/login', passport.authenticate('local', { failureFlash: true, failu
     res.redirect('/campgrounds');
 });
 
+router.get('/logout', async (req, res) => {
+    // req.logout();
+    // req.flash('success', 'ログアウトしました');
+    // res.redirect('/campgrounds');
+    
+    req.logout(function(err) {
+        if (err) { 
+            // エラーが発生した場合は、Express のエラーハンドラに渡す
+            return next(err); 
+        }
+        // ログアウトが成功したら、フラッシュメッセージを設定してリダイレクト
+        req.flash('success', 'ログアウトしました');
+        res.redirect('/campgrounds');
+    });
+
+})
+
 module.exports = router;
