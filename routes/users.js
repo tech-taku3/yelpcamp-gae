@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const User = require('../models/user');
 
 router.get('/register', (req, res) => {
@@ -18,7 +19,17 @@ router.post('/register', async (req, res) => {
         req.flash('error', e.message);
         res.redirect('/register');
     }
-    
+});
+
+router.get('/login', (req, res) => {
+    res.render('users/login');
+});
+
+// passport.authenticate()ミドルウェアの時点で認証は完了している。
+// req.bodyのusernameとpasswordを自動的に見て、ハッシュ化して、DBの値と一致するかまで確認してくれている。
+router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+    req.flash('success', 'おかえりなさい！！');
+    res.redirect('/campgrounds');
 });
 
 module.exports = router;
