@@ -10,6 +10,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 
+const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 
@@ -60,12 +61,7 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-app.get('/fakeUser', async (req, res) => {
-    const user = new User({email: 'hogegege@example.com', username: 'hogegege'});
-    const newUser = await User.register(user, 'mogegege');
-    res.send(newUser);
-})
-
+app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes)
 
