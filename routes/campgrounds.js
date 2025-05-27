@@ -14,7 +14,13 @@ router.get('/new', isLoggedIn, (req, res) => {
 });
 
 router.get('/:id', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews').populate('author');
+    const campground = await Campground.findById(req.params.id)
+    .populate({
+        path: 'reviews',        // 今までのキーと同じ
+        populate: {             // さらに、reviewsのインスタンスに対してpopulateして
+            path: 'author'      // authorを
+        }
+    }).populate('author');
     console.log(campground);
     if (!campground) {
         req.flash('error', 'キャンプ場は見つかりませんでした');
