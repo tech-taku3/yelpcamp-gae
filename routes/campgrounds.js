@@ -45,19 +45,29 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res) => 
 }));
 
 router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
     if (!campground) {
         req.flash('error', 'キャンプ場は見つかりませんでした');
         return res.redirect('/campgrounds');
+    }
+    if (!campground.author.equals(req.user._id)) {
+        req.flash('error', '更新する権限がありません');
+        return res.redirect(`/campgrounds/${id}`);
     }
     res.render('campgrounds/edit', { campground });
 }));
 
 router.put('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+    const campground = await Campground.findById(id);
+    if (!campground.author.equals(req.user._id)) {
+        req.flash('error', '更新する権限がありません');
+        return res.redirect(`/campgrounds/${id}`);
+    }
+    const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
     req.flash('success', 'キャンプ場を更新しました');
-    res.redirect(`/campgrounds/${campground._id}`)
+    res.redirect(`/campgrounds/${camp._id}`)
 }));
 
 router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
