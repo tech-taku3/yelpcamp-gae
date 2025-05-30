@@ -4,7 +4,8 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn, validateCampground, isAuthor } = require('../middleware');
 const multer  = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const { storage } = require('../cloudinary');
+const upload = multer({ storage }); // localではなく、cloudinaryへの保存を設定
 
 router.route('/')  // EXpress app.route()を使ってパスをグルーピング
     .get(catchAsync(campgrounds.index))
