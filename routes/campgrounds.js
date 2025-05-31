@@ -9,16 +9,10 @@ const upload = multer({ storage }); // localではなく、cloudinaryへの保�
 
 router.route('/')  // EXpress app.route()を使ってパスをグルーピング
     .get(catchAsync(campgrounds.index))
-    // .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground));
-    // imageというフィールドをfileとしてパースしてくれる
-    // .post(upload.single('image'),(req, res) => {
-    //     console.log(req.body, req.file);
-    //     res.send('受け付けました');
-    // })
-    .post(upload.array('image'),(req, res) => {
-        console.log(req.body, req.files);
-        res.send('受け付けました');
-    })
+    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground));
+    // この順番だと、cloudinaryにアップロードした後バリデーションチェックで落ちたら、画像はアップロードされる
+    // validateCampground, upload.array('image')でエラー出ない。
+    // validateCampgroundが効いていない？むしろだめ？
 
 router.get('/new', isLoggedIn, campgrounds.renderNewForm);
 
