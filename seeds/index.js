@@ -23,9 +23,22 @@ const seedDB = async () => {
             author: '6832c4d89fa5671dbf75b376',
             location: `${cities[randomCityIndex].prefecture}${cities[randomCityIndex].city}`,
             title: `${sample(descriptors)}・${sample(places)}`,
-            image: `https://picsum.photos/400?random=${Math.random()}`,
             description: '吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。この書生というのは時々我々を捕えて煮て食うという話である。しかしその当時は何という考もなかったから別段恐しいとも思わなかった。ただ彼の掌に載せられてス',
-            price
+            price,
+            images: [
+                {
+                    url: 'https://res.cloudinary.com/dsgdqxnrf/image/upload/v1748673591/YelpCamp/wjbw0d0iedzwipssdvwm.jpg',
+                    filename: 'YelpCamp/wjbw0d0iedzwipssdvwm',
+                },
+                {
+                    url: 'https://res.cloudinary.com/dsgdqxnrf/image/upload/v1748673591/YelpCamp/kkzj752tba6nkrrfvqk7.jpg',
+                    filename: 'YelpCamp/kkzj752tba6nkrrfvqk7',
+                },
+                {
+                    url: 'https://res.cloudinary.com/dsgdqxnrf/image/upload/v1748673591/YelpCamp/xvntiy7jdpxpue8vdhsg.jpg',
+                    filename: 'YelpCamp/xvntiy7jdpxpue8vdhsg',
+                }
+            ]
         });
         await camp.save();
     };
