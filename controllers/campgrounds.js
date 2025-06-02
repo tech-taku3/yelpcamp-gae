@@ -34,15 +34,14 @@ module.exports.createCampground = async (req, res) => {
         query: req.body.campground.location,
         limit: 1
     }).send();
-    res.send(geoData.body.features[0].geometry.coordinates);
-    // res.send('OK!!!!');
-    // const campground = new Campground(req.body.campground);
-    // campground.images = req.files.map(f => ({ url: f.path, filename: f.filename}));
-    // campground.author = req.user._id; // passportが用意しているreq.userのプロパティを使う
-    // await campground.save();
-    // console.log(campground);
-    // req.flash('success', '新しいキャンプ場を登録しました');
-    // res.redirect(`/campgrounds/${campground._id}`);
+    const campground = new Campground(req.body.campground);
+    campground.geometry = geoData.body.features[0].geometry;
+    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename}));
+    campground.author = req.user._id; // passportが用意しているreq.userのプロパティを使う
+    await campground.save();
+    console.log(campground);
+    req.flash('success', '新しいキャンプ場を登録しました');
+    res.redirect(`/campgrounds/${campground._id}`);
 }
 
 module.exports.renderEditForm = async (req, res) => {
