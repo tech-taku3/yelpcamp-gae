@@ -1,4 +1,8 @@
 const Campground = require('../models/campground');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapboxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapboxToken });
+
 const { cloudinary } = require('../cloudinary/index');
 
 module.exports.index = async (req, res) => {
@@ -26,14 +30,19 @@ module.exports.showCampground = async (req, res) => {
 }
 
 module.exports.createCampground = async (req, res) => {
-    // if (!req.body.campground) throw new ExpressError('不正なキャンプ場のデータです', 400);
-    const campground = new Campground(req.body.campground);
-    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename}));
-    campground.author = req.user._id; // passportが用意しているreq.userのプロパティを使う
-    await campground.save();
-    console.log(campground);
-    req.flash('success', '新しいキャンプ場を登録しました');
-    res.redirect(`/campgrounds/${campground._id}`);
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send();
+    res.send(geoData.body.features[0].geometry.coordinates);
+    // res.send('OK!!!!');
+    // const campground = new Campground(req.body.campground);
+    // campground.images = req.files.map(f => ({ url: f.path, filename: f.filename}));
+    // campground.author = req.user._id; // passportが用意しているreq.userのプロパティを使う
+    // await campground.save();
+    // console.log(campground);
+    // req.flash('success', '新しいキャンプ場を登録しました');
+    // res.redirect(`/campgrounds/${campground._id}`);
 }
 
 module.exports.renderEditForm = async (req, res) => {
