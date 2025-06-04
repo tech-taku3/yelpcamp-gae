@@ -46,11 +46,13 @@ app.use(mongoSanitize({
 }));
 
 const sessionConfig = {
+    name: 'session', // デフォルトの名前だと、使用しているサービスを推測される可能性があるので、変更しておくとよい
     secret: 'mysecret',
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        // secure: true, // httpsの場合。ローカルの場合http://localhostなのでfalse
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
