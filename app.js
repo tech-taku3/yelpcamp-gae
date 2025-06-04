@@ -18,6 +18,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 
+const mongoSanitize = require('express-mongo-sanitize');
+
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
@@ -39,6 +41,9 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(mongoSanitize({
+    replaceWith: '_' // 禁止文字を '_' に置き換える（デフォルトの挙動）
+}));
 
 const sessionConfig = {
     secret: 'mysecret',
@@ -60,7 +65,8 @@ passport.deserializeUser(User.deserializeUser());
 app.use(flash());
 
 app.use((req, res, next) => {
-    console.log(req.session);
+    console.log(req.query);
+    console.log(req.user);
     res.locals.currentUser = req.user; // req→resのライフサイクルで、どこのテンプレートからも使えるように
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
