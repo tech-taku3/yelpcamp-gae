@@ -24,10 +24,14 @@ const mongoSanitize = require('express-mongo-sanitize');
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
+
+const MongoStore = require('connect-mongo');
+
 // const dbUrl = process.env.DB_URL;
+const dbUrl = 'mongodb://127.0.0.1:27017/yelpCamp';
 
 // mongoose.connect(dbUrl)
-mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
+mongoose.connect(dbUrl)
     .then(() => {
         console.log('MongoDBコネクションOK!!!');
     })
@@ -48,7 +52,20 @@ app.use(mongoSanitize({
     replaceWith: '_' // 禁止文字を '_' に置き換える（デフォルトの挙動）
 }));
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+        secret: 'mysecret'
+    },
+    touchAfter: 24 * 3600 // time period in seconds
+});
+
+store.on('error', e => {
+    console.log('セッションエラー', e);
+});
+
 const sessionConfig = {
+    store,
     name: 'session', // デフォルトの名前だと、使用しているサービスを推測される可能性があるので、変更しておくとよい
     secret: 'mysecret',
     resave: false,
