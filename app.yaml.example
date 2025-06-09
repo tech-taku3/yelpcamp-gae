@@ -1,0 +1,15 @@
+runtime: nodejs22
+
+instance_class: F1
+
+env_variables:
+  NODE_ENV: 'production'
+  CLOUDINARY_CLOUD_NAME: ''
+  CLOUDINARY_KEY: ''
+  CLOUDINARY_SECRET: ''
+  MAPBOX_TOKEN: ''
+  DB_URL: ''
+
+handlers:
+  - url: /.*
+    script: auto
