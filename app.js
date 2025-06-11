@@ -27,11 +27,9 @@ const reviewRoutes = require('./routes/reviews');
 
 const MongoStore = require('connect-mongo');
 
-// const dbUrl = process.env.DB_URL;
-const dbUrl = 'mongodb://127.0.0.1:27017/yelpCamp';
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpCamp';
 
-// mongoose.connect(dbUrl)
-mongoose.connect(dbUrl)
+mongoose.connect(dbUrl,{useNewUrlParser: true})
     .then(() => {
         console.log('MongoDBコネクションOK!!!');
     })
@@ -51,11 +49,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize({
     replaceWith: '_' // 禁止文字を '_' に置き換える（デフォルトの挙動）
 }));
+const secret = process.env.SECRET || 'mysecret'
 
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     crypto: {
-        secret: 'mysecret'
+        secret
     },
     touchAfter: 24 * 3600 // time period in seconds
 });
@@ -67,7 +66,7 @@ store.on('error', e => {
 const sessionConfig = {
     store,
     name: 'session', // デフォルトの名前だと、使用しているサービスを推測される可能性があるので、変更しておくとよい
-    secret: 'mysecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {

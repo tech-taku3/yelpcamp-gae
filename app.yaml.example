@@ -9,6 +9,7 @@ env_variables:
   CLOUDINARY_SECRET: ''
   MAPBOX_TOKEN: ''
   DB_URL: ''
+  SECRET:''
 
 handlers:
   - url: /.*
