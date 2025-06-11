@@ -49,6 +49,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize({
     replaceWith: '_' // 禁止文字を '_' に置き換える（デフォルトの挙動）
 }));
+app.set('trust proxy', true); // Express はデフォルトでプロキシヘッダーを信頼しないため必要。これがないとCookieにセッションが保存されずログイン状態維持できない。
+
 const secret = process.env.SECRET || 'mysecret'
 
 const store = MongoStore.create({
