@@ -71,7 +71,7 @@ const sessionConfig = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        // secure: true, // httpsの場合。ローカルの場合http://localhostなのでfalse
+        secure: process.env.NODE_ENV === 'production', // httpsの場合。ローカルの場合http://localhostなのでfalse
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
@@ -149,6 +149,8 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err });
 });
 
-app.listen(3000, () => {
-    console.log('ポート3000でリクエスト待受中...');
+const port = process.env.PORT || 3000;
+
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Listening on port ${port}`);
 });
