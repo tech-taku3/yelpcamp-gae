@@ -1,5 +1,12 @@
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
+    secretEnv:
+      - CLOUDINARY_CLOUD_NAME
+      - CLOUDINARY_KEY
+      - CLOUDINARY_SECRET
+      - MAPBOX_TOKEN
+      - DB_URL
+      - APP_SECRET
     entrypoint: 'bash'
     args:
       - '-c'
@@ -11,15 +18,6 @@ steps:
 
         # App Engine にデプロイ
         gcloud app deploy app.yaml --quiet
-
-    # Secret をこのステップに注入（envsubst用）
-    secretEnv:
-      - CLOUDINARY_CLOUD_NAME
-      - CLOUDINARY_KEY
-      - CLOUDINARY_SECRET
-      - MAPBOX_TOKEN
-      - DB_URL
-      - APP_SECRET
 
 availableSecrets:
   secretManager:
