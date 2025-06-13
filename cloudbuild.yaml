@@ -9,7 +9,7 @@ steps:
       - "APP_SECRET"
     entrypoint: "bash"
     args:
-      - "-exec"
+      - "-c"
       - |
         # app.yaml.template を Secret 付きで app.yaml に展開
         envsubst < app.yaml.template > app.yaml
