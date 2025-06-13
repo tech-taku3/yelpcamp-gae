@@ -11,11 +11,12 @@ steps:
     args:
       - "-c"
       - |
+        # envsubst をインストール
+        apt-get update && apt-get install -y gettext-base
         # app.yaml.template を Secret 付きで app.yaml に展開
         envsubst < app.yaml.template > app.yaml
         echo "===== app.yaml preview ====="
         cat app.yaml
-
         # App Engine にデプロイ
         gcloud app deploy app.yaml --quiet
 
