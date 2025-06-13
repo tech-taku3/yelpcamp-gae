@@ -1,14 +1,25 @@
 steps:
-  # 1. Secret を環境変数にエクスポート
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
+        # app.yaml.template を Secret 付きで app.yaml に展開
         envsubst < app.yaml.template > app.yaml
+        echo "===== app.yaml preview ====="
         cat app.yaml
 
+        # App Engine にデプロイ
         gcloud app deploy app.yaml --quiet
+
+    # Secret をこのステップに注入（envsubst用）
+    secretEnv:
+      - CLOUDINARY_CLOUD_NAME
+      - CLOUDINARY_KEY
+      - CLOUDINARY_SECRET
+      - MAPBOX_TOKEN
+      - DB_URL
+      - APP_SECRET
 
 availableSecrets:
   secretManager:
