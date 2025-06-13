@@ -1,6 +1,30 @@
+steps:
+  # 1. Secret を環境変数にエクスポート
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        envsubst < app.yaml.template > app.yaml
+        cat app.yaml
+
+        gcloud app deploy app.yaml --quiet
+
+availableSecrets:
+  secretManager:
+    secrets:
+      - versionName: projects/yelpcamp-462313/secrets/cloudinary-cloud-name/versions/latest
+        env: CLOUDINARY_CLOUD_NAME
+      - versionName: projects/yelpcamp-462313/secrets/cloudinary-key/versions/latest
+        env: CLOUDINARY_KEY
+      - versionName: projects/yelpcamp-462313/secrets/cloudinary-secret/versions/latest
+        env: CLOUDINARY_SECRET
+      - versionName: projects/yelpcamp-462313/secrets/mapbox-token/versions/latest
+        env: MAPBOX_TOKEN
+      - versionName: projects/yelpcamp-462313/secrets/db-url/versions/latest
+        env: DB_URL
+      - versionName: projects/yelpcamp-462313/secrets/app-secret/versions/latest
+        env: APP_SECRET
+
 options:
   logging: CLOUD_LOGGING_ONLY
-
-steps:
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', '--quiet']
