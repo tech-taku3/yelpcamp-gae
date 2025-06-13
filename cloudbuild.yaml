@@ -1,15 +1,15 @@
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     secretEnv:
-      - CLOUDINARY_CLOUD_NAME
-      - CLOUDINARY_KEY
-      - CLOUDINARY_SECRET
-      - MAPBOX_TOKEN
-      - DB_URL
-      - APP_SECRET
-    entrypoint: 'bash'
+      - "CLOUDINARY_CLOUD_NAME"
+      - "CLOUDINARY_KEY"
+      - "CLOUDINARY_SECRET"
+      - "MAPBOX_TOKEN"
+      - "DB_URL"
+      - "APP_SECRET"
+    entrypoint: "bash"
     args:
-      - '-c'
+      - "-exec"
       - |
         # app.yaml.template を Secret 付きで app.yaml に展開
         envsubst < app.yaml.template > app.yaml
@@ -21,19 +21,18 @@ steps:
 
 availableSecrets:
   secretManager:
-    secrets:
-      - versionName: projects/yelpcamp-462313/secrets/cloudinary-cloud-name/versions/latest
-        env: CLOUDINARY_CLOUD_NAME
-      - versionName: projects/yelpcamp-462313/secrets/cloudinary-key/versions/latest
-        env: CLOUDINARY_KEY
-      - versionName: projects/yelpcamp-462313/secrets/cloudinary-secret/versions/latest
-        env: CLOUDINARY_SECRET
-      - versionName: projects/yelpcamp-462313/secrets/mapbox-token/versions/latest
-        env: MAPBOX_TOKEN
-      - versionName: projects/yelpcamp-462313/secrets/db-url/versions/latest
-        env: DB_URL
-      - versionName: projects/yelpcamp-462313/secrets/app-secret/versions/latest
-        env: APP_SECRET
+    - versionName: projects/yelpcamp-462313/secrets/cloudinary-cloud-name/versions/latest
+      env: CLOUDINARY_CLOUD_NAME
+    - versionName: projects/yelpcamp-462313/secrets/cloudinary-key/versions/latest
+      env: CLOUDINARY_KEY
+    - versionName: projects/yelpcamp-462313/secrets/cloudinary-secret/versions/latest
+      env: CLOUDINARY_SECRET
+    - versionName: projects/yelpcamp-462313/secrets/mapbox-token/versions/latest
+      env: MAPBOX_TOKEN
+    - versionName: projects/yelpcamp-462313/secrets/db-url/versions/latest
+      env: DB_URL
+    - versionName: projects/yelpcamp-462313/secrets/app-secret/versions/latest
+      env: APP_SECRET
 
 options:
   logging: CLOUD_LOGGING_ONLY
