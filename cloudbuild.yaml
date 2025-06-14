@@ -1,3 +1,37 @@
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', '--quiet']
+    secretEnv:
+      - "CLOUDINARY_CLOUD_NAME"
+      - "CLOUDINARY_KEY"
+      - "CLOUDINARY_SECRET"
+      - "MAPBOX_TOKEN"
+      - "DB_URL"
+      - "APP_SECRET"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        # envsubst をインストール
+        apt-get update && apt-get install -y gettext-base
+        # app.yaml.template を Secret 付きで app.yaml に展開
+        envsubst < app.yaml.template > app.yaml
+        # App Engine にデプロイ
+        gcloud app deploy app.yaml --quiet
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/866294737868/secrets/cloudinary-cloud-name/versions/latest
+      env: CLOUDINARY_CLOUD_NAME
+    - versionName: projects/866294737868/secrets/cloudinary-key/versions/latest
+      env: CLOUDINARY_KEY
+    - versionName: projects/866294737868/secrets/cloudinary-secret/versions/latest
+      env: CLOUDINARY_SECRET
+    - versionName: projects/866294737868/secrets/mapbox-token/versions/latest
+      env: MAPBOX_TOKEN
+    - versionName: projects/866294737868/secrets/db-url/versions/latest
+      env: DB_URL
+    - versionName: projects/866294737868/secrets/app-secret/versions/latest
+      env: APP_SECRET
+
+options:
+  logging: CLOUD_LOGGING_ONLY
